@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func humanoAdivina() {
@@ -37,4 +38,13 @@ func verificarCombinacion(cmbIngresada combinacion, cmbBase combinacion) (int, i
 		}
 	}
 	return bien, reg
+}
+
+func preguntarNum() (string, error) {
+
+	fmt.Print("\nIngrese un número de 4 cifras, que no se repitan, del 0 al 9: ")
+	var res string
+	fmt.Scan(&res)
+	parsed, err := strconv.ParseInt(res, 10, 0)
+	return parsed, err
 }
