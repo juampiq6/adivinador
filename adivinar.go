@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func humanoAdivina() {
@@ -13,7 +14,7 @@ func humanoAdivina() {
 	fmt.Print("\n_______________________________________________________________________________________________\n")
 	for {
 		num, _ := preguntarNum()
-		var cmb combinacion
+		cmb := parsearCombinacion(num)
 		bien, reg := verificarCombinacion(cmb, cmbBase)
 		if bien == 4 {
 			fmt.Print("\n *** Felicitaciones, adivino el número! *** ")
@@ -45,6 +46,20 @@ func preguntarNum() (string, error) {
 	fmt.Print("\nIngrese un número de 4 cifras, que no se repitan, del 0 al 9: ")
 	var res string
 	fmt.Scan(&res)
-	parsed, err := strconv.ParseInt(res, 10, 0)
-	return parsed, err
+	_, err := strconv.ParseInt(res, 10, 0)
+	if err != nil {
+		return "", err
+	}
+	return res, nil
+}
+
+func parsearCombinacion(str string) combinacion {
+	var comb combinacion
+	comb.cifras = make(map[int]int)
+	strArr := strings.Split(str, "")
+	for i, elem := range strArr {
+		res, _ := strconv.ParseInt(elem, 10, 0) //devuelve un int64
+		comb.cifras[int(res)] = i               //casteamos a int
+	}
+	return comb
 }
