@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -46,11 +47,30 @@ func preguntarNum() (string, error) {
 	fmt.Print("\nIngrese un número de 4 cifras, que no se repitan, del 0 al 9: ")
 	var res string
 	fmt.Scan(&res)
-	_, err := strconv.ParseInt(res, 10, 0)
+	err := validarStringNum(res, 4)
 	if err != nil {
-		return "", err
+		fmt.Print("*** ", err, ". Por favor, ingrese solo 4 cifras diferentes, del 0 al 9 ***\n")
+		res, err = preguntarNum()
 	}
 	return res, nil
+}
+
+func validarStringNum(str string, cant int) error {
+	var err error
+	if len(str) != cant {
+		err = errors.New("El numero ingresado no es de 4 cifras")
+		return err
+	}
+	_, err = strconv.ParseInt(str, 10, 0)
+	if err != nil {
+		err = errors.New("Hubo un error transformando los caracteres a numeros")
+		return err
+	}
+	if !elemsUnicos(str) {
+		err := errors.New("Las cifras del número no se pueden repetir")
+		return err
+	}
+	return nil
 }
 
 func parsearCombinacion(str string) combinacion {
@@ -62,4 +82,15 @@ func parsearCombinacion(str string) combinacion {
 		comb.cifras[int(res)] = i               //casteamos a int
 	}
 	return comb
+}
+
+func elemsUnicos(arr string) bool {
+	for i, valor := range arr {
+		for j, elem := range arr {
+			if int(valor) == int(elem) && j != i {
+				return false
+			}
+		}
+	}
+	return true
 }
