@@ -3,8 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func humanoAdivina() {
@@ -93,4 +95,30 @@ func elemsUnicos(arr string) bool {
 		}
 	}
 	return true
+}
+
+func generarCombBase() combinacion {
+	var cmb combinacion
+	cmb.cifras = make(map[int]int)
+	for i := 0; i < 4; i++ {
+		ru := generarRandomUnico(9, cmb.cifras)
+		cmb.cifras[ru] = i
+		fmt.Print(ru)
+	}
+	return cmb
+}
+
+func generarRandom(hasta int) int {
+	aleat := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return aleat.Intn(hasta)
+}
+
+func generarRandomUnico(hasta int, cifras map[int]int) int {
+	var r int
+	exists := true
+	for exists {
+		r = generarRandom(hasta)
+		_, exists = cifras[r]
+	}
+	return r
 }
