@@ -1,8 +1,27 @@
 package main
 
+type model struct {
+	listCmb        []combinacion
+	cifrasPosibles []int
+}
+
 type combinacion struct {
-	cifras  map[int]int // map en donde el key es la cifra (0-9) y el value es la posicion (0-3)
-	bien    int
-	regular int
-	// se decidio usar map ya que es mucho más facil buscar valores dentro de la estructura, a comparacion por ejemplo del array, donde tenemos que iterar por cada elemento
+	bien         int
+	regular      int
+	cifrasStruct [4]cifra
+	indexCambio  int
+}
+
+func (c combinacion) getCifrasString() string {
+	var str string
+	for i, cifra := range c.cifrasStruct {
+		str = str + string(cifra.valor)
+	}
+	return str
+}
+
+type cifra struct {
+	valor            int
+	posicionCorrecta bool
+	valorCorrecto    bool
 }
