@@ -68,7 +68,7 @@ func validarStringNum(str string, cant int) error {
 		err = errors.New("Hubo un error transformando los caracteres a numeros")
 		return err
 	}
-	if !elemsUnicos(str) {
+	if !elemsUnicos(str, nil) {
 		err := errors.New("Las cifras del número no se pueden repetir")
 		return err
 	}
@@ -86,15 +86,29 @@ func parsearCombinacion(str string) combinacion {
 	return comb
 }
 
-func elemsUnicos(arr string) bool {
-	for i, valor := range arr {
-		for j, elem := range arr {
-			if int(valor) == int(elem) && j != i {
-				return false
+func elemsUnicos(arr string, m map[int]int) bool {
+	if arr != "" {
+
+		for i, valor := range arr {
+			for j, elem := range arr {
+				if j != i && int(valor) == int(elem) {
+					return false
+				}
 			}
 		}
+		return true
 	}
-	return true
+	if m != nil {
+		for i, valor := range m {
+			for j, elem := range m {
+				if j != i && valor == elem {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	return false
 }
 
 func generarCombBase() combinacion {

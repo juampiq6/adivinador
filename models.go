@@ -6,6 +6,7 @@ type model struct {
 }
 
 type combinacion struct {
+	cifras       map[int]int
 	bien         int
 	regular      int
 	cifrasStruct [4]cifra
@@ -14,7 +15,7 @@ type combinacion struct {
 
 func (c combinacion) getCifrasString() string {
 	var str string
-	for i, cifra := range c.cifrasStruct {
+	for _, cifra := range c.cifrasStruct {
 		str = str + string(cifra.valor)
 	}
 	return str
