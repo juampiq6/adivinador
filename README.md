@@ -13,5 +13,4 @@ _Una vez descargado, nos dirigimos al directorio contenedor del repositorio_
 ```
 go run *.go
 ```
-                         
-                                            **Listo! A jugar!**
+ **Listo! A jugar!**
