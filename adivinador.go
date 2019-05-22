@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func maquinaAdivina() {
 
@@ -9,13 +12,11 @@ func maquinaAdivina() {
 	fmt.Print("\n_______________________________________________________________________________________________\n")
 
 	var modelo model
-	modelo.cifrasPosibles = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	modelo.listCmb[0] = generarCombBase() // se genera la combinacion inicial, al azar
-
+	modelo.listCmb = []combinacion{generarCombBase()} // se genera la combinacion inicial, al azar
 	for i := 0; true; i++ {
 		// lastIndex := len(modelo.listCmb) - 1
-		fmt.Print(" ¿ Es su número ? : " + modelo.listCmb[i].getCifrasString())
-		fmt.Print("Cifras BIEN = ")
+		fmt.Print(" ¿ Es su número ? : " + modelo.listCmb[i].cifrasToString())
+		fmt.Print("\nCifras BIEN = ")
 		fmt.Scan(&modelo.listCmb[i].bien)
 		fmt.Print("Cifras REGULAR = ")
 		fmt.Scan(&modelo.listCmb[i].regular)
@@ -31,11 +32,11 @@ func maquinaAdivina() {
 
 }
 
-func (m model) generarNuevaCombinacion() {
+func (m *model) generarNuevaCombinacion() {
 	salir := false
-	var cmb combinacion
-	for {
-		cmb = generarCombBase()
+	cmb := combinacion{0, 0, siguienteNumeroCifrasUnicas(m.listCmb[len(m.listCmb)-1].cifras)}
+	for i := 0; i < 10000; i++ {
+		cmb.cifras = siguienteNumeroCifrasUnicas(cmb.cifras)
 		for i := range m.listCmb {
 			b, r := verificarCombinacion(m.listCmb[i], cmb)
 			if b != m.listCmb[i].bien || r != m.listCmb[i].regular {
@@ -52,31 +53,33 @@ func (m model) generarNuevaCombinacion() {
 	m.listCmb = append(m.listCmb, cmb)
 }
 
-// func siguienteNumeroCifrasUnicas(n map[int]int) {
-// 	for i := range n {
-// 		if n[i] == 9 {
-// 			if v, exists := n[i-1]; exists && v < 9 {
-// 				n[i] = 0
-// 				n[i-1]++
-// 				elemsUnicos("", n)
-// 			} else {
-
-// 			}
-// 		}
-// 	}
-
-// }
-
-// func (m model) ordenarCombinacion() {}
-
-// func (m model) permutarTodos() {}
-
-// func (m model) popCifraPos(i int) {}
-
-// func (m model) guardarPosIng() {}
-
-// func (m model) guardarPosSal() {}
-
-// func (m model) guardarValIng() {}
-
-// func (m model) guardarValSal() {}
+func siguienteNumeroCifrasUnicas(n map[int]int) map[int]int {
+	num := 0
+	var numstr string
+	mult := 1000
+	for i := 0; i < 4; i++ {
+		num = num + n[i]*mult
+		mult = mult / 10
+	}
+	if num < 999 {
+		numstr = strconv.Itoa(num)
+	}
+	for {
+		if num >= 9876 {
+			numstr = "0123"
+		} else {
+			if num < 999 {
+				num++
+				numstr = strconv.Itoa(num)
+				numstr = "0" + numstr
+			} else {
+				num++
+				numstr = strconv.Itoa(num)
+			}
+		}
+		if elemsUnicos(numstr) {
+			break
+		}
+	}
+	return parsearCifras(numstr)
+}
