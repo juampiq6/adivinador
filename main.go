@@ -4,10 +4,10 @@ import "fmt"
 
 func main() {
 
-	fmt.Print(" ¿ Quiere ser el pensador(p) o el adivinador(A) del número ? : ")
+	fmt.Print(" ¿ Quiere ser el pensador(P) o el adivinador(a) del número ? : ")
 	var juego string
 	fmt.Scan(&juego)
-	if juego == "p" {
+	if juego == "a" {
 		humanoAdivina()
 	} else {
 		maquinaAdivina()

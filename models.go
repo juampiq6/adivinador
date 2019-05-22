@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 type model struct {
 	listCmb        []combinacion
 	cifrasPosibles []int
@@ -13,9 +15,9 @@ type combinacion struct {
 }
 
 func (c combinacion) getCifrasString() string {
-	var str string
-	for i, cifra := range c.cifrasStruct {
-		str = str + string(cifra.valor)
+	str := ""
+	for _, cifra := range c.cifrasStruct {
+		str = str + strconv.Itoa(cifra.valor)
 	}
 	return str
 }
