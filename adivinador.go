@@ -1,4 +1,4 @@
-package main
+package adivinadorjuego
 
 import (
 	"fmt"
@@ -16,11 +16,7 @@ func maquinaAdivina() {
 	for i := 0; true; i++ {
 		// lastIndex := len(modelo.listCmb) - 1
 		fmt.Print(" ¿ Es su número ? : " + modelo.listCmb[i].cifrasToString())
-		fmt.Print("\nCifras BIEN = ")
-		fmt.Scan(&modelo.listCmb[i].bien)
-		fmt.Print("Cifras REGULAR = ")
-		fmt.Scan(&modelo.listCmb[i].regular)
-
+		modelo.preguntarBienRegular(i)
 		if modelo.listCmb[i].bien == 4 {
 			fmt.Print(" ¡Sabia que lo podia adivinar! ;) ")
 			break
@@ -32,10 +28,37 @@ func maquinaAdivina() {
 
 }
 
+func (m *model) preguntarBienRegular(i int) {
+	for {
+		var bienstr string
+		fmt.Print("\nCifras BIEN = ")
+		fmt.Scan(&bienstr)
+		err := ValidarStringNum(bienstr, 1)
+		if err != nil {
+			fmt.Print("*** ", err, ". Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
+		} else {
+			m.listCmb[i].bien, _ = strconv.Atoi(bienstr)
+			break
+		}
+	}
+	for {
+		var regstr string
+		fmt.Print("\nCifras REGULAR = ")
+		fmt.Scan(&regstr)
+		err := ValidarStringNum(regstr, 1)
+		if err != nil {
+			fmt.Print("*** ", err, ". Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
+		} else {
+			m.listCmb[i].regular, _ = strconv.Atoi(regstr)
+			break
+		}
+	}
+}
+
 func (m *model) generarNuevaCombinacion() {
 	salir := false
 	cmb := combinacion{0, 0, siguienteNumeroCifrasUnicas(m.listCmb[len(m.listCmb)-1].cifras)}
-	for i := 0; i < 10000; i++ {
+	for {
 		cmb.cifras = siguienteNumeroCifrasUnicas(cmb.cifras)
 		for i := range m.listCmb {
 			b, r := verificarCombinacion(m.listCmb[i], cmb)
