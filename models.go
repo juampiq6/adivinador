@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -95,4 +96,22 @@ func generarRandomUnico(hasta int, cifras map[int]int) int {
 		}
 	}
 	return r
+}
+
+func ValidarStringNum(str string, cant int) error {
+	var err error
+	if len(str) != cant {
+		err = errors.New("El numero ingresado no es de " + strconv.Itoa(cant) + " cifra/s")
+		return err
+	}
+	_, err = strconv.ParseInt(str, 10, 0)
+	if err != nil {
+		err = errors.New("Hubo un error transformando los caracteres a numeros")
+		return err
+	}
+	if !elemsUnicos(str) {
+		err := errors.New("Las cifras del número no se pueden repetir")
+		return err
+	}
+	return nil
 }

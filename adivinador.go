@@ -1,4 +1,4 @@
-package adivinadorjuego
+package main
 
 import (
 	"fmt"
@@ -30,28 +30,34 @@ func maquinaAdivina() {
 
 func (m *model) preguntarBienRegular(i int) {
 	for {
-		var bienstr string
-		fmt.Print("\nCifras BIEN = ")
-		fmt.Scan(&bienstr)
-		err := ValidarStringNum(bienstr, 1)
-		if err != nil {
-			fmt.Print("*** ", err, ". Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
-		} else {
-			m.listCmb[i].bien, _ = strconv.Atoi(bienstr)
+		for {
+			var bienstr string
+			fmt.Print("\nCifras BIEN = ")
+			fmt.Scan(&bienstr)
+			err := ValidarStringNum(bienstr, 1)
+			if err != nil {
+				fmt.Print("*** ", err, ". Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
+			} else {
+				m.listCmb[i].bien, _ = strconv.Atoi(bienstr)
+				break
+			}
+		}
+		for {
+			var regstr string
+			fmt.Print("\nCifras REGULAR = ")
+			fmt.Scan(&regstr)
+			err := ValidarStringNum(regstr, 1)
+			if err != nil {
+				fmt.Print("*** ", err, ". Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
+			} else {
+				m.listCmb[i].regular, _ = strconv.Atoi(regstr)
+				break
+			}
+		}
+		if m.listCmb[i].bien+m.listCmb[i].regular <= 4 {
 			break
 		}
-	}
-	for {
-		var regstr string
-		fmt.Print("\nCifras REGULAR = ")
-		fmt.Scan(&regstr)
-		err := ValidarStringNum(regstr, 1)
-		if err != nil {
-			fmt.Print("*** ", err, ". Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
-		} else {
-			m.listCmb[i].regular, _ = strconv.Atoi(regstr)
-			break
-		}
+		fmt.Print("*** Por favor, ingrese un número de una sola cifra del 0 al 4. BIEN + REGULAR = 4 ***\n")
 	}
 }
 
