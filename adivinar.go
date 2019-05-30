@@ -13,20 +13,20 @@ func humanoAdivina() {
 	fmt.Print("\n_______________________________________________________________________________________________\n")
 	for {
 		num, _ := preguntarNum()
-		var cmb combinacion
-		cmb.cifras = parsearCifras(num)
-		bien, reg := verificarCombinacion(cmb, cmbBase)
-		if bien == 4 {
+		var cmb Combinacion
+		cmb.Cifras = ParsearCifras(num)                 // transformamos el string recibido en un mapa de tipo <int:int>, y lo guardamos en el atributo cifras de la combinacion
+		bien, reg := VerificarCombinacion(cmb, cmbBase) // comparamos la combinacion ingresada, con la combinacion base, generada al principio
+		if bien == 4 {                                  // si la cantidad de bien resultante es 4, el usuario adivino el número
 			fmt.Print("\n *** Felicitaciones, adivino el número! *** ")
 			break
-		} else {
+		} else { // sino, le devuelve la cantidad de bien y regular obtenidos
 			fmt.Print("BIEN : ", bien, " - REGULAR : ", reg)
 
 		}
 	}
 }
 
-func preguntarNum() (string, error) {
+func preguntarNum() (string, error) { // preguntamos el numero que el usuario debe ingresar, repetimos hasta que sea valido y lo entregamos como string
 
 	fmt.Print("\nIngrese un número de 4 cifras, que no se repitan, del 0 al 9: ")
 	var res string

@@ -8,35 +8,35 @@ import (
 	"time"
 )
 
-type model struct {
-	listCmb []combinacion
+type model struct { // el modelo nos sirve para guardar una lista de combinaciones
+	listCmb []Combinacion
 }
 
-type combinacion struct {
-	bien    int
-	regular int
-	cifras  map[int]int
+type Combinacion struct { // la combinacion almacena las cifras en un mapa <int:int>, la cantidad de bien y de regular obtenidos por esa combinacion
+	Bien    int
+	Regular int
+	Cifras  map[int]int // el mapa almacena el orden de la cifra en la key, y el valor de la cifra en el value
 }
 
-func (c combinacion) cifrasToString() string {
+func (c Combinacion) cifrasToString() string { //el objetivo de esta funcion es solo mostrar por pantalla al usuario
 	var str string
-	for i := 0; i < 4; i++ {
-		str = str + strconv.Itoa(c.cifras[i])
+	for i := 0; i < len(c.Cifras); i++ {
+		str = str + strconv.Itoa(c.Cifras[i])
 	}
 	return str
 }
 
-func verificarCombinacion(cmbIngresada combinacion, cmbBase combinacion) (int, int) {
+func VerificarCombinacion(cmbIngresada Combinacion, cmbBase Combinacion) (int, int) { //compara dos combinaciones y obtiene la cantidad de bien y de regular
 	var bien int
 	var reg int
-	for orden, cifra := range cmbIngresada.cifras {
-		for o, c := range cmbBase.cifras {
-			if cifra == c {
-				if orden == o {
-					bien++
+	for orden, cifra := range cmbIngresada.Cifras {
+		for o, c := range cmbBase.Cifras {
+			if cifra == c { // si los value de los mapas coinciden
+				if orden == o { // y si ademas tienen la misma key (orden)
+					bien++ // se agrega un bien
 					break
-				} else {
-					reg++
+				} else { // sino tienen la misma key (orden)
+					reg++ // se agrega un regular
 					break
 				}
 			}
@@ -45,20 +45,20 @@ func verificarCombinacion(cmbIngresada combinacion, cmbBase combinacion) (int, i
 	return bien, reg
 }
 
-func parsearCifras(str string) map[int]int {
-	cifras := make(map[int]int)
-	strArr := strings.Split(str, "")
+func ParsearCifras(str string) map[int]int { // transforma un string a mapa<int:int>
+	cifras := make(map[int]int)      // inicializamos el mapa
+	strArr := strings.Split(str, "") //creamos un array de string, conteniendo cada elemento una cifra
 	for i, elem := range strArr {
-		res, _ := strconv.ParseInt(elem, 10, 0) //devuelve un int64
-		cifras[i] = int(res)                    //casteamos a int
+		res, _ := strconv.Atoi(elem) // parseamos de string a int, devuelve un int64
+		cifras[i] = int(res)         // casteamos a int, y lo asignamos al mapa, en el orden i
 	}
 	return cifras
 }
 
-func elemsUnicos(arr string) bool {
+func ElemsUnicos(arr string) bool { // verifica que los elementos de un string sean unicos
 	for i, valor := range arr {
 		for j, elem := range arr {
-			if j != i && int(valor) == int(elem) {
+			if j != i && int(valor) == int(elem) { // si el orden es diferente (para que no verifique el mismo elemento) y el valor es igual, devuleve false
 				return false
 			}
 		}
@@ -66,17 +66,16 @@ func elemsUnicos(arr string) bool {
 	return true
 }
 
-func generarCombBase() combinacion {
-	var cmb combinacion
-	cmb.cifras = make(map[int]int)
+func generarCombBase() Combinacion { // genera una combinacion aleatoria, de cifras unicas
+	var cmb Combinacion
+	cmb.Cifras = make(map[int]int) // inicializamos el mapa
 	for i := 0; i < 4; i++ {
-		ru := generarRandomUnico(10, cmb.cifras)
-		cmb.cifras[i] = ru
+		cmb.Cifras[i] = generarRandomUnico(10, cmb.Cifras) // asignamos un numero aleatorio del 0 al 10 (no incluido) que no se encuentre en el mapa
 	}
 	return cmb
 }
 
-func generarRandom(hasta int) int {
+func generarRandom(hasta int) int { // genera un numero aleatorio del 0 al [hasta] (no incluido) => [0-hasta)
 	aleat := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return aleat.Intn(hasta)
 }
@@ -87,11 +86,11 @@ func generarRandomUnico(hasta int, cifras map[int]int) int {
 	for exists {
 		r = generarRandom(hasta)
 		for i := 0; i < 4; i++ {
-			if cifras[i] == r {
+			if cifras[i] == r { // si el numero generado ya se encuentra en el mapa
 				exists = true
-				break
+				break // generara otro random
 			} else {
-				exists = false
+				exists = false // sino cuando i==4, saldra con una cifra random diferente al resto
 			}
 		}
 	}
@@ -100,18 +99,18 @@ func generarRandomUnico(hasta int, cifras map[int]int) int {
 
 func ValidarStringNum(str string, cant int) error {
 	var err error
-	if len(str) != cant {
-		err = errors.New("El numero ingresado no es de " + strconv.Itoa(cant) + " cifra/s")
+	if len(str) != cant { // si la cantidad de caracteres del string no es la deseada
+		err = errors.New("El numero ingresado no es de " + strconv.Itoa(cant) + " cifra/s") // crea error
 		return err
 	}
-	_, err = strconv.ParseInt(str, 10, 0)
-	if err != nil {
-		err = errors.New("Hubo un error transformando los caracteres a numeros")
+	_, err = strconv.Atoi(str) // tranforma de string a int
+	if err != nil {            // si hubo un error en la tranformacion
+		err = errors.New("Hubo un error transformando los caracteres a numeros") // crea error
 		return err
 	}
-	if !elemsUnicos(str) {
-		err := errors.New("Las cifras del número no se pueden repetir")
+	if !ElemsUnicos(str) { // si los elementos del string no son unicos
+		err := errors.New("Las cifras del número no se pueden repetir") // crea error
 		return err
 	}
-	return nil
+	return nil // si no encuentra error, devolver error=nil
 }
